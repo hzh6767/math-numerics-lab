@@ -1,0 +1,46 @@
+==========================================================================
+2D Navier-Stokes (vorticity-streamfunction) -- convergence study
+==========================================================================
+domain [0, 2pi)^2  |  nu = 0.1  |  Fourier pseudo-spectral + RK4
+Taylor-Green exact solution used as the reference (see module docstring).
+
+(1) Temporal convergence at fixed N = 32, T = 1.0
+          dt    max|omega_num - omega_exact|
+         0.2                    1.397945e-05
+         0.1                    8.517524e-07
+        0.05                    2.751954e-11
+       0.025                    1.712852e-12
+    order between dt=0.2 and dt=0.1: 4.0367
+    order between dt=0.1 and dt=0.05: 14.9177
+    order between dt=0.05 and dt=0.025: 4.0060
+    min observed temporal order = 4.0060  (RK4 -> ~4)
+
+(2) Spatial convergence, smooth blob IC, nu = 0.05, T = 0.2, dt = 1e-3
+         grid pair      max|coarse - fine|
+       32 -> 64               1.264768e-07
+       64 -> 128              3.269095e-08
+      128 -> 256              8.070901e-09
+    (error falls by roughly 4x per doubling of N; see the caveats below)
+
+(3) Discrete enstrophy decay for the Taylor-Green solution, N = 32
+          t      Z(t) numeric      exp(-4 nu t)
+      0.000      1.0000000000      1.0000000000
+      0.167      0.9353822591      0.9355069850
+      0.333      0.8749399706      0.8751733190
+      0.500      0.8187307531      0.8187307531
+      0.667      0.7658262214      0.7659283384
+      0.833      0.7163402610      0.7165313106
+      1.000      0.6703200460      0.6703200460
+    measured decay rate = 0.400029   analytic 4*nu = 0.4
+    relative error      = 7.143e-05
+
+==========================================================================
+SCOPE / CAVEATS
+==========================================================================
+* This measures DISCRETISATION ORDER only; it proves no theorem.
+* 2D smooth solutions of these equations are known to exist for all
+  time. We report only N in [32, 64, 128, 256] and dt in [0.2, 0.1, 0.05, 0.025].
+* The 3D Navier-Stokes regularity problem is NOT addressed here and
+  remains open.
+
+Total wall time: 15.76 s

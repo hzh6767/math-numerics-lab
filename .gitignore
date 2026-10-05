@@ -1,4 +1,29 @@
+# Python
 __pycache__/
+*.py[cod]
 *.pyc
+*.pyo
+*.egg-info/
+build/
+dist/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# pytest / coverage
 .pytest_cache/
-*.png
+.coverage
+htmlcov/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Generated plots: regenerate with the modules; the data files in results/
+# ARE part of the deliverable and are intentionally NOT ignored.
+results/*.png
+results/*.pdf

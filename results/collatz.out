@@ -1,0 +1,112 @@
+====================================================================
+Collatz (3n+1) trajectory statistics -- numerical experiment
+====================================================================
+Bound N = 1,000,000  (all starting values n in [1, N] are iterated)
+
+Reference checks (total stopping time):
+  tau(  1) =    0   expected    0   OK
+  tau(  2) =    1   expected    1   OK
+  tau(  3) =    7   expected    7   OK
+  tau(  6) =    8   expected    8   OK
+  tau(  7) =   16   expected   16   OK
+  tau(  9) =   19   expected   19   OK
+  tau( 18) =   20   expected   20   OK
+  tau( 25) =   23   expected   23   OK
+  tau( 27) =  111   expected  111   OK
+Reference checks (maximum value on trajectory):
+  max_value(27) =   9232   expected   9232   OK
+All reference checks passed.
+
+(a) Reachability
+    Every n in [1, 1,000,000] reaches 1: yes (0 unresolved).
+    This is a finite check over [1, 1,000,000]; it is NOT a proof.
+
+(b) Record holders for total stopping time (new maxima of tau)
+    n          tau(n)    previous record   gain
+            1         0           -1        
+            2         1            0        +1
+            3         7            1        +6
+            6         8            7        +1
+            7        16            8        +8
+            9        19           16        +3
+           18        20           19        +1
+           25        23           20        +3
+           27       111           23        +88
+           54       112          111        +1
+           73       115          112        +3
+           97       118          115        +3
+          129       121          118        +3
+          171       124          121        +3
+          231       127          124        +3
+          313       130          127        +3
+          327       143          130        +13
+          649       144          143        +1
+          703       170          144        +26
+          871       178          170        +8
+        1,161       181          178        +3
+        2,223       182          181        +1
+        2,463       208          182        +26
+        2,919       216          208        +8
+        3,711       237          216        +21
+        6,171       261          237        +24
+       10,971       267          261        +6
+       13,255       275          267        +8
+       17,647       278          275        +3
+       23,529       281          278        +3
+       26,623       307          281        +26
+       34,239       310          307        +3
+       35,655       323          310        +13
+       52,527       339          323        +16
+       77,031       350          339        +11
+      106,239       353          350        +3
+      142,587       374          353        +21
+      156,159       382          374        +8
+      216,367       385          382        +3
+      230,631       442          385        +57
+      410,011       448          442        +6
+      511,935       469          448        +21
+      626,331       508          469        +39
+      837,799       524          508        +16
+    (44 records; last record at n = 837,799)
+
+(c) Largest value reached by any trajectory starting at n <= 1,000,000
+    n = 704,511  reaches a maximum of 56,991,483,520
+
+(d) Summary of total stopping times over n in [1, N]
+    count  = 1,000,000
+    min    = 0
+    median = 125.0
+    mean   = 131.4344
+    std    = 56.6701
+    max    = 524
+
+    Coarse histogram (tau buckets):
+      [  0,  20):      270    0.03%  
+      [ 20,  40):   11,692    1.17%  #
+      [ 40,  60):   66,208    6.62%  ####
+      [ 60,  80):  129,861   12.99%  ########
+      [ 80, 100):  135,999   13.60%  ########
+      [100, 120):  122,716   12.27%  #######
+      [120, 140):  113,872   11.39%  #######
+      [140, 160):  113,600   11.36%  #######
+      [160, 180):   99,124    9.91%  ######
+      [180, 200):   81,054    8.11%  #####
+      [200, 250):   96,615    9.66%  ######
+      [250, 300):   23,305    2.33%  #
+      [300, 400):    5,583    0.56%  
+
+(e) Average stopping time vs. heuristic
+    measured mean tau over [1, N]        = 131.4344
+    mean of log2(n) over [1, N]          = 18.4889
+    measured mean tau / mean log2(n)     = 7.1088
+    naive 1/(1 - log2 3)                 = -1.7095  (negative -> not a valid average)
+    Naive 2^K vs 3^K argument: each odd step multiplies by ~3 and
+    each even step divides by 2; on average the map shrinks, so the
+    average stopping time is expected to grow only logarithmically
+    in n. We report the MEASURED ratio above rather than assert it.
+
+--------------------------------------------------------------------
+Build time: 1.62s   Total: 1.76s
+All results are finite numerical evidence for n <= 1,000,000.
+The Collatz conjecture is neither proved nor disproved here.
+--------------------------------------------------------------------

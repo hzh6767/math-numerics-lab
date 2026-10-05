@@ -1,0 +1,93 @@
+========================================================================
+Goldbach partitions of even numbers -- numerical experiment
+========================================================================
+Bound (largest even n tested) : 2,000,000  (primes sieved to 2,000,000)
+Even values examined          : 999,999 (n = 4, 6, ..., 2,000,000)
+
+[a] Any even n in range with NO representation found?
+    NONE. Every even n in [4, 2,000,000] has at least one partition.
+
+[b] Minimum partition count over the range
+    min count            = 1  (attained at n = 4)
+    first n with 1       = 4
+    largest n with 1     = 12
+    #(even n with count 1) = 4
+
+[c] Maximum partition count over the range
+    max count = 27988  (attained at n = 1981980)
+
+[d] Average partition count over all even n in range
+    average = 5987.2143
+
+[e] Record-setting n (Goldbach comet band structure)
+    distinct record holders up to 2,000,000: 182
+    -- record holders with n in [0, 1,000]:
+         n =         4   count = 1
+         n =        10   count = 2
+         n =        22   count = 3
+         n =        34   count = 4
+         n =        48   count = 5
+         n =        60   count = 6
+         n =        78   count = 7
+         n =        84   count = 8
+         n =        90   count = 9
+         n =       114   count = 10
+         n =       120   count = 12
+         n =       168   count = 13
+         n =       180   count = 14
+         n =       210   count = 19
+         n =       300   count = 21
+         n =       330   count = 24
+         n =       390   count = 27
+         n =       420   count = 30
+         n =       510   count = 32
+         n =       630   count = 41
+         n =       780   count = 44
+         n =       840   count = 51
+         n =       990   count = 52
+    -- record holders with n in [900,000, 1,000,001]:
+         n =   903,210   count = 14725
+         n =   930,930   count = 15342
+         n =   990,990   count = 15594
+    -- record holders with n in [1,500,000, 2,000,001]:
+         n = 1,531,530   count = 24044
+         n = 1,651,650   count = 24111
+         n = 1,681,680   count = 24353
+         n = 1,688,610   count = 24565
+         n = 1,711,710   count = 26246
+         n = 1,806,420   count = 26597
+         n = 1,831,830   count = 26755
+         n = 1,861,860   count = 27561
+         n = 1,951,950   count = 27802
+         n = 1,981,980   count = 27988
+
+[f] Measured vs Hardy-Littlewood heuristic (order-of-magnitude only)
+    score = 2 * C2 * n / (log n)^2 * prod_{p|n, p>2} (p-1)/(p-2)
+             n    measured    HL score    ratio
+         1,000          28        36.9    0.759
+        10,000         127       207.5    0.612
+       100,000         810      1328.2    0.610
+     1,000,000       5,402      9223.3    0.586
+     2,000,000       9,720     16726.1    0.581
+    (heuristic asymptotic, not an exact formula; magnitude agreement only)
+
+Reference values asserted exactly (FFT and direct scan):
+    n =    4: 1  OK
+    n =   10: 2  OK
+    n =  100: 6  OK
+    n = 1000: 28  OK
+FFT-vs-direct cross-checks (exact):
+    n =         4: 1  OK
+    n =        10: 2  OK
+    n =       100: 6  OK
+    n =     1,000: 28  OK
+    n =   123,456: 1452  OK
+    n =   500,000: 3052  OK
+    n =   999,998: 4206  OK
+    n = 1,999,998: 21850  OK
+    n = 2,000,000: 9720  OK
+
+FINITE RANGE ONLY: the above verifies the counts for every even
+n in [4, 2,000,000]. A finite verification is NOT a proof of the
+Goldbach conjecture, which remains open.
+========================================================================

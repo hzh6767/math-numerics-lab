@@ -1,0 +1,101 @@
+........Windows fatal exception: code 0xc0000139
+
+Thread 0x00008b60 (most recent call first):
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 1321 in create_module
+  File "<frozen importlib._bootstrap>", line 813 in module_from_spec
+  File "<frozen importlib._bootstrap>", line 921 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "E:\anaconda3\Lib\site-packages\gmpy2\__init__.py", line 1 in <module>
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 1027 in exec_module
+  File "<frozen importlib._bootstrap>", line 935 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "E:\anaconda3\Lib\site-packages\mpmath\libmp\backend.py", line 70 in <module>
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 1027 in exec_module
+  File "<frozen importlib._bootstrap>", line 935 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "E:\anaconda3\Lib\site-packages\mpmath\libmp\libmpf.py", line 17 in <module>
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 1027 in exec_module
+  File "<frozen importlib._bootstrap>", line 935 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "E:\anaconda3\Lib\site-packages\mpmath\libmp\__init__.py", line 1 in <module>
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 1027 in exec_module
+  File "<frozen importlib._bootstrap>", line 935 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1310 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "E:\anaconda3\Lib\site-packages\mpmath\ctx_base.py", line 3 in <module>
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 1027 in exec_module
+  File "<frozen importlib._bootstrap>", line 935 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "E:\anaconda3\Lib\site-packages\mpmath\ctx_fp.py", line 1 in <module>
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 1027 in exec_module
+  File "<frozen importlib._bootstrap>", line 935 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "E:\anaconda3\Lib\site-packages\mpmath\__init__.py", line 5 in <module>
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 1027 in exec_module
+  File "<frozen importlib._bootstrap>", line 935 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "D:\gh-opt\math-numerics-lab\zeta_zeros.py", line 31 in <module>
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 1027 in exec_module
+  File "<frozen importlib._bootstrap>", line 935 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "D:\gh-opt\math-numerics-lab\tests\test_experiments.py", line 40 in zeta_module
+  File "E:\anaconda3\Lib\site-packages\_pytest\fixtures.py", line 930 in call_fixture_func
+  File "E:\anaconda3\Lib\site-packages\_pytest\fixtures.py", line 1196 in pytest_fixture_setup
+  File "E:\anaconda3\Lib\site-packages\pluggy\_callers.py", line 103 in _multicall
+  File "E:\anaconda3\Lib\site-packages\pluggy\_manager.py", line 120 in _hookexec
+  File "E:\anaconda3\Lib\site-packages\pluggy\_hooks.py", line 513 in __call__
+  File "E:\anaconda3\Lib\site-packages\_pytest\fixtures.py", line 1128 in execute
+  File "E:\anaconda3\Lib\site-packages\_pytest\fixtures.py", line 640 in _get_active_fixturedef
+  File "E:\anaconda3\Lib\site-packages\_pytest\fixtures.py", line 549 in getfixturevalue
+  File "E:\anaconda3\Lib\site-packages\_pytest\fixtures.py", line 720 in _fillfixtures
+  File "E:\anaconda3\Lib\site-packages\_pytest\python.py", line 1674 in setup
+  File "E:\anaconda3\Lib\site-packages\_pytest\runner.py", line 514 in setup
+  File "E:\anaconda3\Lib\site-packages\_pytest\runner.py", line 164 in pytest_runtest_setup
+  File "E:\anaconda3\Lib\site-packages\pluggy\_callers.py", line 103 in _multicall
+  File "E:\anaconda3\Lib\site-packages\pluggy\_manager.py", line 120 in _hookexec
+  File "E:\anaconda3\Lib\site-packages\pluggy\_hooks.py", line 513 in __call__
+  File "E:\anaconda3\Lib\site-packages\_pytest\runner.py", line 246 in <lambda>
+  File "E:\anaconda3\Lib\site-packages\_pytest\runner.py", line 344 in from_call
+  File "E:\anaconda3\Lib\site-packages\_pytest\runner.py", line 245 in call_and_report
+  File "E:\anaconda3\Lib\site-packages\_pytest\runner.py", line 130 in runtestprotocol
+  File "E:\anaconda3\Lib\site-packages\_pytest\runner.py", line 117 in pytest_runtest_protocol
+  File "E:\anaconda3\Lib\site-packages\pluggy\_callers.py", line 103 in _multicall
+  File "E:\anaconda3\Lib\site-packages\pluggy\_manager.py", line 120 in _hookexec
+  File "E:\anaconda3\Lib\site-packages\pluggy\_hooks.py", line 513 in __call__
+  File "E:\anaconda3\Lib\site-packages\_pytest\main.py", line 367 in pytest_runtestloop
+  File "E:\anaconda3\Lib\site-packages\pluggy\_callers.py", line 103 in _multicall
+  File "E:\anaconda3\Lib\site-packages\pluggy\_manager.py", line 120 in _hookexec
+  File "E:\anaconda3\Lib\site-packages\pluggy\_hooks.py", line 513 in __call__
+  File "E:\anaconda3\Lib\site-packages\_pytest\main.py", line 343 in _main
+  File "E:\anaconda3\Lib\site-packages\_pytest\main.py", line 289 in wrap_session
+  File "E:\anaconda3\Lib\site-packages\_pytest\main.py", line 336 in pytest_cmdline_main
+  File "E:\anaconda3\Lib\site-packages\pluggy\_callers.py", line 103 in _multicall
+  File "E:\anaconda3\Lib\site-packages\pluggy\_manager.py", line 120 in _hookexec
+  File "E:\anaconda3\Lib\site-packages\pluggy\_hooks.py", line 513 in __call__
+  File "E:\anaconda3\Lib\site-packages\_pytest\config\__init__.py", line 175 in main
+  File "E:\anaconda3\Lib\site-packages\_pytest\config\__init__.py", line 201 in console_main
+  File "E:\anaconda3\Lib\site-packages\pytest\__main__.py", line 9 in <module>
+  File "<frozen runpy>", line 88 in _run_code
+  File "<frozen runpy>", line 198 in _run_module_as_main
+....................                                             [100%]
+28 passed in 6.76s

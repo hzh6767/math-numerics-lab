@@ -1,0 +1,78 @@
+==========================================================================
+Numerical experiment: nontrivial zeros of zeta on the critical line
+==========================================================================
+mpmath working precision : 40 significant digits
+target number of zeros   : 30
+
+Sanity check of Z(t) = exp(i theta) zeta(1/2 + i t) vs mpmath.siegelz:
+  t=  5.0  Z_siegelz=-0.738863428275265  Re(zeta-form)=-0.738863428275265  |Im|= 2.2e-42  OK
+  t= 17.0  Z_siegelz=  2.14271218304331  Re(zeta-form)=  2.14271218304331  |Im|= 1.1e-41  OK
+  t= 50.0  Z_siegelz=-0.340735005955025  Re(zeta-form)=-0.340735005955025  |Im|=1.93e-41  OK
+
+Scanning Z(t) for sign changes (step=0.05) ...
+Found 30 zeros in 2.23 s.
+
+Computed zeros (zero is 1/2 + i*gamma_n):
+  n                       gamma_n
+  1    14.13472514173469379045725
+  2    21.02203963877155499262848
+  3    25.01085758014568876321379
+  4     30.4248761258595132103119
+  5    32.93506158773918969066237
+  6    37.58617815882567125721776
+  7    40.91871901214749518739813
+  8    43.32707328091499951949612
+  9    48.00515088116715972794247
+ 10    49.77383247767230218191678
+ 11     52.9703214777144606441473
+ 12    56.44624769706339480436776
+ 13    59.34704400260235307965365
+ 14     60.8317785246098098442599
+ 15    65.11254404808160666087505
+ 16    67.07981052949417371447883
+ 17    69.54640171117397925292686
+ 18    72.06715767448190758252211
+ 19    75.70469069908393316832692
+ 20    77.14484006887480537268266
+ 21    79.33737502024936792276359
+ 22    82.91038085408603018316484
+ 23    84.73549298051705010573531
+ 24    87.42527461312522940653167
+ 25    88.80911120763446542368235
+ 26    92.49189927055848429625973
+ 27    94.65134404051988696659793
+ 28    95.87063422824530975874103
+ 29    98.83119421819369223332442
+ 30    101.3178510057313912287854
+
+Agreement with published reference values (first five zeros):
+  gamma_1: computed=14.1347251417346938  ref=14.134725141734693  |diff|=1.776e-15
+  gamma_2: computed=21.022039638771555  ref=21.022039638771556  |diff|=0.000e+00
+  gamma_3: computed=25.0108575801456888  ref=25.010857580145689  |diff|=0.000e+00
+  gamma_4: computed=30.4248761258595132  ref=30.424876125859512  |diff|=0.000e+00
+  gamma_5: computed=32.9350615877391897  ref=32.935061587739192  |diff|=0.000e+00
+  max |diff| over first five = 1.776e-15
+  ASSERTION PASSED: first five zeros agree to < 1e-6 (>= 6 decimals).
+
+Zero-counting vs Riemann-von Mangoldt main term N(T) ~ (T/2pi)log(T/2pi) - T/2pi + 7/8:
+  height T                      = 101.3189
+  zeros counted with 0<gamma<T  = 30
+  main term N(T)                = 29.5845810978
+  difference (counted - N(T))   = +0.4154
+
+Observed gaps vs average spacing 2*pi/log(T/2pi):
+  first few gaps (float): 6.8873, 3.9888, 5.4140, 2.5102, 4.6511
+  min gap / avg_spacing = 0.5276
+  max gap / avg_spacing = 1.5703
+  (average spacing near last zero = 2.2598)
+
+==========================================================================
+STATEMENT OF SCOPE / CAVEATS
+==========================================================================
+* All 30 zeros reported lie on the critical line BY
+  CONSTRUCTION of the search (we only scan t on Re(s)=1/2).
+* This states NOTHING about the Riemann Hypothesis and does NOT
+  address whether zeros off the critical line exist.
+* Verified numerically only for 0 < gamma < 101.319 (30 zeros).
+
+Total wall time: 2.24 s
