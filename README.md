@@ -192,6 +192,17 @@ Note for Git Bash users: `python` is not on `PATH` here and the interpreter
 resolves `/d/...` paths as `C:\d\...`, so always invoke `E:/anaconda3/python.exe`
 explicitly with a drive-letter path (as above), not `/d/...`.
 
+### A harmless startup message
+
+On this Anaconda-on-Windows setup, importing `mpmath` (used by `zeta_zeros.py`)
+first tries to load the optional `gmpy2` accelerator, whose DLL fails to load
+with `Windows fatal exception: code 0xc0000139`. This is a Windows DLL search
+issue in the `gmpy2` build, not a fault in this code: `mpmath` catches it and
+falls back to its pure-Python integer backend, and every result and assertion is
+unchanged. You may see that message printed before the test output; it does not
+mean a test failed. All 20 tests still pass, and the zeta zeros are computed to
+the same 40-digit precision either way.
+
 ## References
 
 - B. Riemann, *Uber die Anzahl der Primzahlen unter einer gegebenen Grosse*, 1859.
