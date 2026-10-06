@@ -1,46 +1,116 @@
 ==========================================================================
 2D Navier-Stokes (vorticity-streamfunction) -- convergence study
 ==========================================================================
-domain [0, 2pi)^2  |  nu = 0.1  |  Fourier pseudo-spectral + RK4
-Taylor-Green exact solution used as the reference (see module docstring).
+domain [0, 2pi)^2  |  nu = 0.1  |  Fourier pseudo-spectral + explicit RK4
+exact solution: Taylor-Green vortex (smooth for all t)  |  T = 1.0
 
-(1) Temporal convergence at fixed N = 32, T = 1.0
-          dt    max|omega_num - omega_exact|
-         0.2                    1.397945e-05
-         0.1                    8.517524e-07
-        0.05                    2.751954e-11
-       0.025                    1.712852e-12
-    order between dt=0.2 and dt=0.1: 4.0367
-    order between dt=0.1 and dt=0.05: 14.9177
-    order between dt=0.05 and dt=0.025: 4.0060
-    min observed temporal order = 4.0060  (RK4 -> ~4)
+SCOPE: this measures the order of accuracy of a discretisation on a smooth
+known solution. It says NOTHING about the Navier-Stokes existence-and-
+smoothness problem, which is open (a 3D question). Every number below
+comes from an actual run; nothing is extrapolated beyond the grids run.
 
-(2) Spatial convergence, smooth blob IC, nu = 0.05, T = 0.2, dt = 1e-3
-         grid pair      max|coarse - fine|
-       32 -> 64               1.264768e-07
-       64 -> 128              3.269095e-08
-      128 -> 256              8.070901e-09
-    (error falls by roughly 4x per doubling of N; see the caveats below)
-
-(3) Discrete enstrophy decay for the Taylor-Green solution, N = 32
-          t      Z(t) numeric      exp(-4 nu t)
-      0.000      1.0000000000      1.0000000000
-      0.167      0.9353822591      0.9355069850
-      0.333      0.8749399706      0.8751733190
-      0.500      0.8187307531      0.8187307531
-      0.667      0.7658262214      0.7659283384
-      0.833      0.7163402610      0.7165313106
-      1.000      0.6703200460      0.6703200460
-    measured decay rate = 0.400029   analytic 4*nu = 0.4
-    relative error      = 7.143e-05
+Sanity checks (N = 64):
+  max|psi_rec - psi_exact|      = 7.772e-16   (Poisson sign/scale)
+  max|u_rec   - u_exact|        = 6.661e-16
+  max|v_rec   - v_exact|        = 6.661e-16
+  max|(u.grad)w| (Taylor-Green) = 1.127e-14
+  -> the Taylor-Green advection term is IDENTICALLY ZERO (value above is
+     roundoff), and its vorticity is a single exactly-representable mode.
+     It is therefore a roundoff-level CORRECTNESS check, not a spatial-
+     order measurement. See the WARNING in part (1) and part (2).
 
 ==========================================================================
-SCOPE / CAVEATS
+(1) SPATIAL convergence -- Taylor-Green vortex
 ==========================================================================
-* This measures DISCRETISATION ORDER only; it proves no theorem.
-* 2D smooth solutions of these equations are known to exist for all
-  time. We report only N in [32, 64, 128, 256] and dt in [0.2, 0.1, 0.05, 0.025].
-* The 3D Navier-Stokes regularity problem is NOT addressed here and
-  remains open.
+T = 1.0, dt = 0.0005   (stability margin nu*K2max*dt = 1.64 at N=256; limit 2.785)
 
-Total wall time: 15.76 s
+         N          dt        L2 error     order p
+    --------------------------------------------
+        32     5.0e-04      6.3264e-16            
+        64     5.0e-04      7.0672e-16       -0.16
+       128     5.0e-04      7.5514e-16       -0.10
+       256     5.0e-04      6.6628e-16        0.18
+
+WARNING: the Taylor-Green L2 error is at the ROUNDOFF FLOOR (~6.7e-16)
+         at EVERY N, because the advection term is identically zero and the
+         solution is one exactly-representable Fourier mode. The 'order'
+         column above is roundoff noise, NOT the scheme's spatial order.
+         The solver is correct (error ~ machine epsilon); the TEST CASE is
+         degenerate for spatial convergence. Part (2) measures the real order.
+
+==========================================================================
+(2) SPATIAL convergence -- manufactured solution (full spectrum + genuine
+    nonlinearity):  w_ex = e^(-2 nu t) P_r(x) P_r(y),  r = 0.7
+==========================================================================
+T = 1.0, dt = 0.0005
+
+         N          dt        L2 error     order p
+    --------------------------------------------
+        16     5.0e-04      8.0960e-01            
+        32     5.0e-04      1.0323e-01        2.97
+        64     5.0e-04      1.3306e-03        6.28
+       128     5.0e-04      4.6609e-07       11.48
+       256     5.0e-04      5.8372e-14       22.93
+
+    Exponential (spectral) convergence: the error falls by a large factor per
+    doubling and the observed order GROWS with N -- the signature of a
+    spectral method on an analytic solution, not a fixed algebraic order.
+
+==========================================================================
+(3) TEMPORAL convergence -- Taylor-Green, N = 64
+==========================================================================
+    The spatial part is exact for this case, so the ONLY error is time
+    integration. Explicit-RK4 stability: dt < 0.01360 (nu*K2max = 204.8);
+    nsteps = 20, 40 give dt = 0.05, 0.025 > that bound (unstable) and are
+    therefore not used -- the sweep starts at nsteps = 80 to satisfy it.
+
+     nsteps            dt        L2 error     order p
+    ------------------------------------------------
+         80     1.250e-02      5.3633e-14            
+        160     6.250e-03      3.8868e-15        3.79
+        320     3.125e-03      3.1959e-16        3.60
+        640     1.563e-03      4.9523e-16       -0.63
+
+    RK4 is 4th order, so p -> 4 while truncation dominates; the finest
+    refinement reaches the roundoff floor (~1e-16) and its measured order
+    degrades there (machine noise, not a solver defect).
+
+==========================================================================
+(4) ENSTROPHY decay -- Taylor-Green, N = 64, dt = 0.0005
+==========================================================================
+    Z(t) = <w^2>;  exact Z(t) = Z(0) e^(-4 nu t),  with Z(0) = 1.000000
+    max relative drift over 0 <= t <= 1.0 :  3.074e-15
+
+==========================================================================
+(5) Plot
+==========================================================================
+  plot saved to D:\gh-opt\math-numerics-lab\results\ns2d_convergence.png
+
+==========================================================================
+ASSERTIONS
+==========================================================================
+    PASS: finest Taylor-Green L2 error 6.66e-16 < 1e-5
+    PASS: manufactured-solution order at finest pair 22.93 >= 3 (spectral convergence)
+    PASS: measured temporal order 3.79 >= 3.5 (RK4)
+    PASS: max enstrophy drift 3.07e-15 < 1e-6
+
+--------------------------------------------------------------------------
+SUMMARY
+--------------------------------------------------------------------------
+    * Solver: Fourier pseudo-spectral, 2/3-rule dealiasing, explicit RK4.
+    * Taylor-Green (the requested case) is reproduced to ROUNDOFF (~7e-16);
+      it is degenerate for spatial convergence (zero advection, single mode)
+      and is reported as a correctness check, not as a spatial order.
+    * A non-degenerate manufactured solution shows SPECTRAL spatial
+      convergence: error 8.1e-01 (N=16) -> 5.8e-14 (N=256),
+      with the observed order growing to 22.9.
+    * Temporal order on the exactly-representable Taylor-Green case is 3.79
+      (RK4 ~ 4), measured while truncation dominates.
+    * Discrete enstrophy tracks Z(0) e^(-4 nu t) to 3.1e-15 relative.
+
+    * These are finite numerical measurements on smooth exact solutions.
+      This says NOTHING about the Navier-Stokes existence-and-smoothness
+      problem, which is open. No theorem is proved or claimed here.
+--------------------------------------------------------------------------
+    All assertions passed: True
+    Total wall time: 235.5 s

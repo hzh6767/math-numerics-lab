@@ -1,6 +1,6 @@
-........Windows fatal exception: code 0xc0000139
+Windows fatal exception: code 0xc0000139
 
-Thread 0x00008b60 (most recent call first):
+Thread 0x00011ff4 (most recent call first):
   File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
   File "<frozen importlib._bootstrap_external>", line 1321 in create_module
   File "<frozen importlib._bootstrap>", line 813 in module_from_spec
@@ -97,5 +97,5 @@ Thread 0x00008b60 (most recent call first):
   File "E:\anaconda3\Lib\site-packages\pytest\__main__.py", line 9 in <module>
   File "<frozen runpy>", line 88 in _run_code
   File "<frozen runpy>", line 198 in _run_module_as_main
-....................                                             [100%]
-28 passed in 6.76s
+....................                                                     [100%]
+20 passed in 4.03s

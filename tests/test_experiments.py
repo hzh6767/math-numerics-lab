@@ -236,40 +236,80 @@ def ns2d_module():
 
 def test_ns2d_exact_solution_satisfies_equations(ns2d_module):
     """
-    The Taylor-Green reference really solves the vorticity equation:
-    omega_t = nu * Laplacian(omega) with Laplacian(omega) = -2 omega.
+    The Taylor-Green reference really solves the vorticity equation.
+    For w = 2 cos x cos y e^{-2 nu t}, laplacian(w) = -2 w, so the heat equation
+    w_t = nu * laplacian(w) holds with w_t = -2 nu w.
     """
     N, nu = 32, 0.1
-    _, X, Y = ns2d_module.make_grid(N)
-    # numeric omega_t via central time difference
     dt = 1e-6
-    d_omega_dt = (ns2d_module.exact_vorticity(X, Y, dt, nu)
-                  - ns2d_module.exact_vorticity(X, Y, -dt, nu)) / (2 * dt)
-    lap = -2.0 * ns2d_module.exact_vorticity(X, Y, 0.0, nu)
-    assert np.max(np.abs(d_omega_dt - nu * lap)) < 1e-9
+    w_plus, _, _ = ns2d_module.tg_exact(N, dt, nu)
+    w_minus, _, _ = ns2d_module.tg_exact(N, -dt, nu)
+    w0, _, _ = ns2d_module.tg_exact(N, 0.0, nu)
+    d_w_dt = (w_plus - w_minus) / (2 * dt)
+    lap = -2.0 * w0
+    assert np.max(np.abs(d_w_dt - nu * lap)) < 1e-9
 
 
 def test_ns2d_temporal_order_at_least_3_5(ns2d_module):
-    """RK4 temporal order at fixed N is ~4 (allow slack: assert >= 3.5)."""
-    errs, orders = ns2d_module.temporal_convergence(
-        N=16, nu=0.1, T=0.5, dts=(0.1, 0.05, 0.025)
-    )
+    """RK4 temporal order at fixed N is ~4 (allow slack: assert >= 3.5).
+
+    N = 16 keeps the explicit-RK4 diffusive stability bound generous:
+    nu * K2max = 0.1 * 2 * 8^2 = 12.8, so dt < 2.785 / 12.8 ~ 0.218. The dt
+    values below sit well inside that bound.
+    """
+    N, nu, T = 16, 0.1, 0.5
+    dts = (0.05, 0.025, 0.0125)
+    errs = []
+    for dt in dts:
+        w_hat, _ = ns2d_module.integrate(
+            ns2d_module.tg_vorticity_hat(N, 0.0, nu), N, dt, T, nu=nu
+        )
+        errs.append(ns2d_module.l2_error(w_hat, ns2d_module.tg_exact(N, T, nu)[0]))
+    orders = [ns2d_module.observed_order(errs[i], errs[i + 1])
+              for i in range(len(errs) - 1)]
     assert all(errs[i] > errs[i + 1] for i in range(len(errs) - 1)), errs
     assert min(orders) >= 3.5, f"temporal orders {orders}"
 
 
 def test_ns2d_spatial_error_decreases_with_resolution(ns2d_module):
-    """Refining N must reduce the (self-convergence) error, monotonically."""
-    errs = ns2d_module.spatial_convergence(Ns=(16, 32, 64), nu=0.05, T=0.1, dt=5e-3)
-    ordered = [errs[(16, 32)], errs[(32, 64)]]
-    assert ordered[0] > ordered[1], f"error did not decrease: {errs}"
-    assert errs[(32, 64)] < 1e-5
+    """Refining N reduces the error, measured on the NON-DEGENERATE manufactured
+    solution. Taylor-Green cannot exercise spatial truncation: its advection term
+    is identically zero and its vorticity is a single exactly-representable mode,
+    so it sits at the roundoff floor at every N.
+    """
+    nu, T, dt = 0.05, 0.1, 2e-3
+    errs = {}
+    for N in (16, 32, 64):
+        fields = ns2d_module.mms_fields(N)
+        src = (lambda tt, f=fields: ns2d_module.mms_source_hat(f, tt, nu))
+        w_hat, _ = ns2d_module.integrate(
+            fields["Q_hat"], N, dt, T, nu=nu, source_fn=src
+        )
+        errs[N] = ns2d_module.l2_error(w_hat, ns2d_module.mms_exact(N, T, nu))
+    assert errs[16] > errs[32] > errs[64], errs
+    # Spectral convergence: the error falls faster than any fixed algebraic
+    # order. The r = 0.7 Poisson kernel is a sharp peak, so N = 16 is not yet
+    # in the asymptotic regime and the first pair shows a modest order; the
+    # second pair already shows the signature spectral growth.
+    orders = [ns2d_module.observed_order(errs[16], errs[32]),
+              ns2d_module.observed_order(errs[32], errs[64])]
+    assert orders[-1] >= 4.0, f"orders {orders}"
+    assert errs[64] < 1e-2, errs
 
 
 def test_ns2d_enstrophy_decays_at_analytic_rate(ns2d_module):
-    """Discrete enstrophy decays at rate 4*nu (here 0.4) to within 1%."""
-    ts, zs, rate = ns2d_module.enstrophy_decay(N=16, nu=0.1, T=0.5, dt=1e-3)
-    assert rate == pytest.approx(0.4, rel=0.01)
-    assert zs[0] == pytest.approx(1.0, abs=1e-12)
-    for t, z in zip(ts, zs):
-        assert z == pytest.approx(ns2d_module.exact_enstrophy(t, 0.1), rel=2e-3)
+    """Discrete enstrophy tracks Z(0) exp(-4 nu t) for the Taylor-Green case.
+
+    The module computes the drift internally (there is no separate decay-rate
+    helper); we assert that drift and then independently spot-check Z(T).
+    """
+    N, nu, T, dt = 16, 0.1, 0.5, 1e-3
+    w0_hat = ns2d_module.tg_vorticity_hat(N, 0.0, nu)
+    w_hat, drift = ns2d_module.integrate(
+        w0_hat, N, dt, T, nu=nu, track_enstrophy=True
+    )
+    assert drift is not None
+    assert drift < 1e-6, f"enstrophy drift {drift}"
+    # Z(0) = 1 for Taylor-Green, so Z(T) should equal exp(-4 nu T)
+    z_t = float(np.mean(np.fft.ifft2(w_hat).real ** 2))
+    assert z_t == pytest.approx(np.exp(-4.0 * nu * T), rel=1e-6)

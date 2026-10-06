@@ -117,25 +117,66 @@ Bound: every `n` in `[1, 1,000,000]` reaches 1 (0 unresolved).
 
 ### 2D Navier-Stokes convergence (`ns2d_convergence.py`)
 
-Temporal convergence at fixed `N = 32`, `T = 1.0` (`nu = 0.1`, Taylor-Green
-exact solution):
+Solver: Fourier pseudo-spectral (collocation) in vorticity-streamfunction form,
+with the **2/3-rule dealiasing** applied to the nonlinear term, and classical
+explicit RK4 time stepping. `nu = 0.1`, `T = 1.0`. The explicit-RK4 diffusive
+stability limit is `nu * K2max * dt < ~2.785`, which sets the usable step size at
+each resolution; steps above that bound are unstable and are not reported.
 
-| dt | max abs error |
+**The Taylor-Green case is degenerate for spatial convergence.** Its advection
+term `(u . grad) w` vanishes identically (measured `1.127e-14`, i.e. roundoff)
+and its vorticity `2 cos x cos y` is a single exactly-representable Fourier mode.
+So the scheme reproduces it to machine precision at every `N`, and any "order"
+read off that table is roundoff noise, not the scheme's accuracy. It is kept as a
+correctness check:
+
+| N | L2 error vs Taylor-Green |
 |---|---|
-| 0.2 | 1.397945e-05 |
-| 0.1 | 8.517524e-07 |
-| 0.05 | 2.751954e-11 |
-| 0.025 | 1.712852e-12 |
+| 32 | 6.3264e-16 |
+| 64 | 7.0672e-16 |
+| 128 | 7.5514e-16 |
+| 256 | 6.6628e-16 |
 
-Measured orders: `4.0367`, `14.9177` (an artifact of the error reaching the
-round-off floor), `4.0060`; minimum order `4.0060` (RK4 implies about 4).
+The sign and scale conventions are verified at `N = 64`: recovered `psi`, `u`, `v`
+match the closed forms to `7.8e-16`, `6.7e-16`, `6.7e-16`.
 
-Spatial convergence (smooth blob, `nu = 0.05`, `T = 0.2`, `dt = 1e-3`), error vs
-the next-finer grid: `32 -> 64: 1.264768e-07`, `64 -> 128: 3.269095e-08`,
-`128 -> 256: 8.070901e-09`, roughly a factor of 4 per doubling of `N`.
+**A non-degenerate test — method of manufactured solutions** with
+`w_ex = e^{-2 nu t} P_r(x) P_r(y)`, `r = 0.7` (full spectrum, genuine
+nonlinearity, plus its source term) — measures the real spatial order:
 
-Enstrophy decay at `N = 32`: measured rate `0.400029` vs analytic `4*nu = 0.4`
-(relative error `7.14e-05`).
+| N | L2 error | observed order p |
+|---|---|---|
+| 16 | 8.0960e-01 | |
+| 32 | 1.0323e-01 | 2.97 |
+| 64 | 1.3306e-03 | 6.28 |
+| 128 | 4.6609e-07 | 11.48 |
+| 256 | 5.8372e-14 | 22.93 |
+
+The error falls by a large factor per doubling and the observed order **grows**
+with `N`: the signature of spectral (exponential) convergence on an analytic
+solution, not a fixed algebraic order.
+
+**Temporal convergence** at fixed `N = 64` (spatially exact for Taylor-Green, so
+time integration is the only error):
+
+| nsteps | dt | L2 error | observed order p |
+|---|---|---|---|
+| 80 | 1.250e-02 | 5.3633e-14 | |
+| 160 | 6.250e-03 | 3.8868e-15 | 3.79 |
+| 320 | 3.125e-03 | 3.1959e-16 | 3.60 |
+| 640 | 1.563e-03 | 4.9523e-16 | -0.63 |
+
+RK4 is 4th order, so `p -> 4` while truncation dominates (3.79, 3.60); the
+finest refinement reaches the roundoff floor near `1e-16`, where the measured
+order degrades into noise. The sweep starts at `nsteps = 80` rather than 20
+because `dt = 0.05` and `0.025` at `N = 64` give `nu * K2max * dt = 10.24` and
+`5.12`, both **above** the `~2.785` stability limit — they are diffusive
+unstable, not merely inaccurate, so they are excluded.
+
+**Enstrophy decay** at `N = 64`, `dt = 5e-4`: the discrete `Z(t) = <w^2>` tracks
+the analytic `Z(0) e^{-4 nu t}` with a maximum relative drift of `3.074e-15` over
+`0 <= t <= 1`. (This is measured, not assumed: the module integrates with
+`track_enstrophy=True` and takes the max deviation from the closed form.)
 
 ## Why this is interesting
 
