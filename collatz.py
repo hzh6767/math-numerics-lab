@@ -212,6 +212,8 @@ def main():
     print()
     print("    Coarse histogram (tau buckets):")
     edges = [0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 250, 300, 400]
+    if tmax >= edges[-1]:
+        edges.append(tmax + 1)
     hist, _ = np.histogram(tau, bins=edges)
     for lo, hi, c in zip(edges[:-1], edges[1:], hist):
         frac = c / N

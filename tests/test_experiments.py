@@ -224,6 +224,20 @@ def test_collatz_known_record_holder(collatz_tables):
     assert int(np.argmax(tau)) + 1 == 77031
 
 
+def test_collatz_printed_histogram_counts_every_start(monkeypatch, capsys):
+    import re
+    import collatz
+
+    # 230631 exceeds the last fixed stopping-time edge of 400.
+    monkeypatch.setattr(collatz, "N", 230_631)
+    collatz.main()
+    rows = re.findall(r"^\s*\[\s*(\d+),\s*(\d+)\):\s*([\d,]+)",
+                      capsys.readouterr().out, re.MULTILINE)
+    assert int(rows[-1][0]) == 400
+    assert int(rows[-1][1]) > 400
+    assert sum(int(count.replace(",", "")) for _, _, count in rows) == collatz.N
+
+
 # ===========================================================================
 # ns2d_convergence.py -- 2D Navier-Stokes convergence study
 # ===========================================================================

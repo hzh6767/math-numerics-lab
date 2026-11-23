@@ -31,7 +31,7 @@ jobs:
       # partition counts, Collatz stopping times, N-S convergence orders), so a
       # green run means those constants still reproduce on this interpreter.
       - name: Run tests
-        run: python -m pytest tests -q
+        run: python -m pytest -q
 
       # The modules must also run standalone, not only under pytest.
       - name: Run each module

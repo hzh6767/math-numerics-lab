@@ -149,6 +149,8 @@ def check_references(is_prime, evens, counts):
     passed = []
     index_of = {int(n): k for k, n in enumerate(evens)}
     for n, expected in REFERENCE_COUNTS.items():
+        if n not in index_of:
+            continue
         direct = direct_unordered_count(is_prime, n)
         fft_val = int(counts[index_of[n]])
         assert direct == expected, f"direct scan for {n}: {direct} != {expected}"

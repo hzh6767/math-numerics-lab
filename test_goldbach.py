@@ -66,6 +66,17 @@ def test_run_result_consistency():
     assert res["n_even_values"] == (20_000 - 4) // 2 + 1
 
 
+@pytest.mark.parametrize("bound", [4, 5, 10, 99, 100, 999, 1000])
+def test_small_run_checks_only_reachable_reference_values(bound):
+    results = run(n_max=bound, verbose=False)
+    assert results["reference_checks"] == [
+        (n, count) for n, count in REFERENCE_COUNTS.items() if n <= bound
+    ]
+    assert results["n_max"] == bound - bound % 2
+    assert results["n_even_values"] == bound // 2 - 1
+    assert results["every_even_covered"]
+
+
 def test_check_references_returns_all():
     is_prime = sieve_primes(1000)
     evens, counts = goldbach_counts(1000, is_prime=is_prime)
