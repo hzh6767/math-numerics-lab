@@ -93,7 +93,8 @@ All reference checks passed.
       [180, 200):   81,054    8.11%  #####
       [200, 250):   96,615    9.66%  ######
       [250, 300):   23,305    2.33%  #
-      [300, 400):    5,583    0.56%  
+      [300, 400):    5,574    0.56%
+      [400, 525):      110    0.01%
 
 (e) Average stopping time vs. heuristic
     measured mean tau over [1, N]        = 131.4344
